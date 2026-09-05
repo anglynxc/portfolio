@@ -1,0 +1,83 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
+
+@theme {
+  --font-sans: 'Plus Jakarta Sans', sans-serif;
+  --font-serif: 'Playfair Display', serif;
+  
+  --color-primary: #4CAF50;
+  --color-secondary: #E8F5E9;
+  --color-cream: #FDFBF7;
+  --color-dark: #333333;
+}
+
+/* PENTING: Bikin scroll jadi smooth */
+html {
+  scroll-behavior: smooth;
+}
+
+/* PENTING: Biar section nggak ketutup navbar pas di-scroll */
+section {
+  scroll-margin-top: 80px;
+}
+
+body {
+  font-family: var(--font-sans);
+  font-weight: 400;
+}
+
+/* Animasi Scroll */
+.reveal {
+  opacity: 0;
+  transform: translateY(50px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  will-change: opacity, transform;
+}
+
+.reveal.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Flip Card 3D */
+.flip-card {
+  perspective: 1000px;
+  cursor: pointer;
+}
+
+.flip-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+}
+
+.flip-card.is-flipped .flip-card-inner {
+  transform: rotateY(180deg);
+}
+
+.flip-card-front, .flip-card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  border-radius: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+}
+
+.flip-card-front {
+  background-color: white;
+}
+
+.flip-card-back {
+  background-color: #E8F5E9;
+  color: #333333;
+  transform: rotateY(180deg);
+}
