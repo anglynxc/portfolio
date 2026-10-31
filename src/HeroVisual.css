@@ -1,0 +1,88 @@
+.hero-visual {
+  position: relative;
+}
+
+.profile-photo-frame {
+  position: relative;
+}
+
+/* ---------- Pergantian foto (crossfade) ---------- */
+/* Foto kedua menutupi foto pertama persis, lalu memudar masuk dan keluar */
+.profile-photo-slide {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 1s ease;
+}
+
+.profile-photo-slide.is-active {
+  opacity: 1;
+}
+
+/* ---------- Badge teks yang melayang ---------- */
+.hero-badge {
+  position: absolute;
+  z-index: 5; /* di atas foto, jadi tulisan tidak tersembunyi */
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.7rem 1.1rem;
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+  font-size: 0.9rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.hero-badge-top {
+  top: 8%;
+  left: 0;
+  animation: badge-float-a 4s ease-in-out infinite;
+}
+
+.hero-badge-bottom {
+  bottom: 8%;
+  right: 0;
+  animation: badge-float-b 5s ease-in-out infinite;
+}
+
+@keyframes badge-float-a {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(8px, -12px);
+  }
+}
+
+@keyframes badge-float-b {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(-8px, 12px);
+  }
+}
+
+@media (max-width: 640px) {
+  .hero-badge {
+    padding: 0.55rem 0.9rem;
+    font-size: 0.8rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-badge-top,
+  .hero-badge-bottom {
+    animation: none;
+  }
+  .profile-photo-slide {
+    transition: none;
+  }
+}

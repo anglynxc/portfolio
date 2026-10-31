@@ -1,372 +1,536 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
+import Lenis from 'lenis';
+import 'lenis/dist/lenis.css';
+import './App.css';
+import Toolkit from './Toolkit';
+import HeroVisual from './HeroVisual';
 
-// Komponen Reusable untuk animasi scroll
-const Reveal = ({ children, className = '' }) => {
-  const domRef = useRef();
+const projects = [
+  {
+    number: '01',
+    category: 'Web Application',
+    title: 'AccEscape Room',
+    description: 'An interactive escape room web game with a dark, atmospheric theme, where players solve puzzles and challenges through an immersive in-browser experience.',
+    stack: ['React', 'Vite', 'Tailwind CSS'],
+    tone: 'project-sand',
+    image: '/images/projects/AccEscape.png',
+    liveUrl: '',
+    repoUrl: '',
+  },
+  {
+    number: '02',
+    category: 'Educational Program',
+    title: 'ARsemble App',
+    description: 'An augmented reality learning app for exploring computer hardware in real time, with interactive 3D components and a built-in quiz. Developed in Unity and built as an Android APK.',
+    stack: ['Unity', 'Augmented Reality', 'Android APK'],
+    tone: 'project-cream',
+    image: '/images/projects/ARsemble.jpeg',
+    liveUrl: '',
+    repoUrl: '',
+  },
+  {
+    number: '03',
+    category: 'Web Application',
+    title: 'Daily-Notes-App',
+    description: 'A daily notes app for managing everyday notes easily and securely, built with a microservices architecture that separates the user, note, and comment services.',
+    stack: ['Next.js', 'Tailwind CSS', 'Prisma', 'Microservices', 'TypeScript'],
+    tone: 'project-gray',
+    image: '/images/projects/Daily.png',
+    liveUrl: '',
+    repoUrl: '',
+  },
+  {
+    number: '04',
+    category: '3D Graphics',
+    title: 'Server Room',
+    description: 'A 3D visualization project that represents a server room environment and its components, rendered with C++ and OpenGL.',
+    stack: ['C++', 'OpenGL', '3D Graphics'],
+    tone: 'project-sand',
+    image: '/images/projects/ServerRoom.png',
+    liveUrl: '',
+    repoUrl: '',
+  },
+  {
+    number: '05',
+    category: 'Web Application',
+    title: 'SiLomba',
+    description: 'An all-in-one competition platform for finding competitions from various campus partners in one place. Data is stored in MySQL and images are managed with Cloudinary.',
+    stack: ['HTML', 'CSS', 'JavaScript', 'MySQL', 'Cloudinary'],
+    tone: 'project-gray',
+    image: '/images/projects/Silomba.png',
+    liveUrl: '',
+    repoUrl: '',
+  },
+  {
+    number: '06',
+    category: 'Web Application',
+    title: 'UMindify',
+    description: 'A tutoring platform where users can register as tutors or as students looking for lessons. Data is stored in MySQL and images are managed with Cloudinary.',
+    stack: ['HTML', 'CSS', 'JavaScript', 'MySQL', 'Cloudinary'],
+    tone: 'project-cream',
+    image: '/images/projects/Umindify.png',
+    liveUrl: '',
+    repoUrl: '',
+  },
+];
+
+const credentials = [
+  // AWARDS
+  {
+    title: 'IDEA-Fest 2024 – Silver Medal',
+    issuer: 'Universitas Negeri Malang · Faculty of Engineering',
+    date: '14 Nov 2024',
+    type: 'Awards',
+    detail: 'Awarded a Silver Medal for the invention "Upgrade" at the Innovations, Developments, Explorations and Applications in Techno-Science Festival (IDEA-Fest) 2024.',
+    image: '/images/certificates/AW1.jpeg',
+  },
+  {
+    title: 'IDEA-Fest 2025 – Bronze Medal',
+    issuer: 'Universitas Negeri Malang · Faculty of Engineering',
+    date: '16 Oct 2025',
+    type: 'Awards',
+    detail: 'Awarded a Bronze Medal for the invention "BliMed" at IDEA-Fest 2025, themed "RISE to IMPACT: From Ideas to Real-World Change".',
+    image: '/images/certificates/AW2.jpeg',
+  },
+  {
+    title: '3rd Place – National Digital Poster Competition',
+    issuer: 'FESMARO 2025 · Himpunan Mahasiswa Teknik Elektro dan Informatika, UM',
+    date: '17 Apr 2025',
+    type: 'Awards',
+    detail: 'Won 3rd place in the national-level Digital Education Poster competition at the Electrical & Informatics Student Creativity Festival (FESMARO) 2025, themed "Creativity Without Limits, Innovation Without Stopping".',
+    image: '/images/certificates/AW3.jpeg',
+  },
+
+  // ACHIEVEMENTS
+  {
+    title: 'Event Chairperson – Belajar Interaktif, Berkarya Inovatif',
+    issuer: 'Komunitas Teknik Care (KTC) · BEM Faculty of Engineering, UM',
+    date: '3 Oct 2026',
+    type: 'Achievements',
+    detail: 'Served as Chairperson of the "Belajar Interaktif, Berkarya Inovatif" event, coordinating the committee and overseeing the event from planning to execution.',
+    image: '/images/certificates/AC1.jpeg',
+  },
+  {
+    title: 'BELMAWA Competition – PKM Category',
+    issuer: 'Universitas Negeri Malang · Directorate of Student Affairs and Alumni',
+    date: '10 Apr 2026',
+    type: 'Achievements',
+    detail: 'Recognized for having one of the best proposals in the university-level Student Creativity Program (PKM) 2026 selection, nominated to SIMBELMAWA.',
+    image: '/images/certificates/AC2.jpeg',
+  },
+  {
+    title: 'Practicum Assistant – Object-Oriented Programming',
+    issuer: 'Department of Electrical Engineering and Informatics · Universitas Negeri Malang',
+    date: '26 Jan – 22 May 2026',
+    type: 'Achievements',
+    detail: 'Served as a practicum assistant for Object-Oriented Programming in the 2025/2026 even semester, supporting students and helping deliver lab sessions.',
+    image: '/images/certificates/AC3.jpeg',
+  },
+
+  // COURSES
+  {
+    title: 'Content Creator National Seminar',
+    issuer: 'BIGFAIR RISE 2025',
+    date: '11 Jan 2025',
+    type: 'Courses',
+    detail: 'Participated in the national seminar talkshow "Make Money From Ur Social Media" on content creation and monetizing social media.',
+    image: '/images/certificates/C1.jpeg',
+  },
+  {
+    title: 'Public Speaking Training',
+    issuer: 'BIGFAIR RISE 2025',
+    date: '11 Jan 2025',
+    type: 'Courses',
+    detail: 'Completed the public speaking training "Dare To Speak Up To Get Attention", focused on confident delivery and communication skills.',
+    image: '/images/certificates/C2.jpeg',
+  },
+  {
+    title: 'Career Preparation Training',
+    issuer: 'BIGFAIR RISE 2025',
+    date: '11 Jan 2025',
+    type: 'Courses',
+    detail: 'Joined the career preparation session "Get Ready For Career!" covering readiness for the professional world.',
+    image: '/images/certificates/C3.jpeg',
+  },
+  {
+    title: 'Certificate of Appreciation',
+    issuer: 'BIGFAIR RISE 2025',
+    date: '2025',
+    type: 'Courses',
+    detail: 'Certificate of appreciation received for participation and contribution in the BIGFAIR RISE 2025 program.',
+    image: '/images/certificates/C4.jpeg',
+  },
+  {
+    title: 'IT Essentials 8',
+    issuer: 'Cisco Networking Academy · Universitas Negeri Malang',
+    date: '12 Aug 2026',
+    type: 'Courses',
+    detail: 'Successfully completed the IT Essentials 8 learning program through Cisco Networking Academy.',
+    image: '/images/certificates/C5.jpeg',
+  },
+
+  // CERTIFICATIONS
+  {
+    title: 'Copyright Registration (Hak Cipta)',
+    issuer: 'Republic of Indonesia',
+    date: '2026',
+    type: 'Certifications',
+    detail: 'Listed as a creator in the attachment of an official copyright registration certificate.',
+    image: '/images/certificates/S1.jpg',
+  },
+];
+
+const categories = [
+  'All',
+  'Certifications',
+  'Awards',
+  'Achievements',
+  'Courses',
+];
+
+const INITIAL_PROJECTS = 3;     // jumlah project yang tampil di awal
+const INITIAL_CREDENTIALS = 8;  // jumlah sertifikat yang tampil di awal
+
+const pad = (n) => String(n).padStart(2, '0');
+
+function ArrowUpRight() {
+  return <span aria-hidden="true" className="arrow-up-right">↗</span>;
+}
+
+function SectionHeading({ eyebrow, title, description, align = 'left' }) {
+  return (
+    <div className={`section-heading section-heading-${align}`}>
+      {eyebrow && <p className="eyebrow">{eyebrow}</p>}
+      <h2>{title}</h2>
+      {description && <p className="section-description">{description}</p>}
+    </div>
+  );
+}
+
+function App() {
+  const [activeCategory, setActiveCategory] = useState('All');
+  const [selectedCredential, setSelectedCredential] = useState(null);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [showAllProjects, setShowAllProjects] = useState(false);
+  const [showAllCredentials, setShowAllCredentials] = useState(false);
+
+  const visibleCredentials = activeCategory === 'All'
+    ? credentials
+    : credentials.filter((item) => item.type === activeCategory);
+
+  const shownProjects = showAllProjects ? projects : projects.slice(0, INITIAL_PROJECTS);
+  const shownCredentials = showAllCredentials
+    ? visibleCredentials
+    : visibleCredentials.slice(0, INITIAL_CREDENTIALS);
+
+  const closeMenu = () => setMenuOpen(false);
+
+  // Tutup daftar lalu kembali ke awal section supaya pengguna tidak "tersesat"
+  const collapseSection = (sectionId, setter) => {
+    setter(false);
+    const el = document.getElementById(sectionId);
+    if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 90 });
+  };
 
   useEffect(() => {
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('active');
-        } else {
-          entry.target.classList.remove('active');
-        }
-      });
-    }, { threshold: 0.1 });
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const ANCHOR_GAP = 36; // jarak judul section dari bawah navbar (px). Ubah sesuai selera.
 
-    if (domRef.current) {
-      observer.observe(domRef.current);
+    // Scroll halus (roda mouse dan trackpad)
+    let lenis;
+    let frame;
+    if (!reduceMotion) {
+      lenis = new Lenis({
+        duration: 1.8,
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        wheelMultiplier: 0.9,
+      });
+      const raf = (time) => {
+        lenis.raf(time);
+        frame = requestAnimationFrame(raf);
+      };
+      frame = requestAnimationFrame(raf);
     }
 
-    return () => observer.disconnect();
+    // Klik menu: berhenti pas di bawah navbar, tanpa ruang kosong di atas judul section.
+    // Posisi tujuan = awal section + padding atas section - tinggi navbar - jarak.
+    const getTargetY = (id) => {
+      const section = document.getElementById(id);
+      if (!section) return null;
+      if (id === 'home') return 0;
+      const header = document.querySelector('.site-header');
+      const headerHeight = header ? header.offsetHeight : 82;
+      const paddingTop = parseFloat(getComputedStyle(section).paddingTop) || 0;
+      const sectionTop = section.getBoundingClientRect().top + window.scrollY;
+      return Math.max(0, sectionTop + paddingTop - headerHeight - ANCHOR_GAP);
+    };
+
+    const handleAnchorClick = (event) => {
+      if (event.defaultPrevented || event.button !== 0) return;
+      if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+      const link = event.target.closest('a[href^="#"]');
+      if (!link) return;
+      const id = link.getAttribute('href').slice(1);
+      const y = id ? getTargetY(id) : null;
+      if (y === null) return;
+      event.preventDefault();
+      if (lenis) lenis.scrollTo(y, { duration: 1.6 });
+      else window.scrollTo({ top: y });
+      window.history.replaceState(null, '', `#${id}`);
+    };
+    document.addEventListener('click', handleAnchorClick);
+
+    // Isi tiap section muncul pelan saat masuk layar (kecuali hero)
+    const targets = document.querySelectorAll('main section:not(#home) > .container');
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.05, rootMargin: '0px 0px -8% 0px' }
+    );
+    targets.forEach((el) => {
+      el.classList.add('reveal');
+      observer.observe(el);
+    });
+
+    return () => {
+      cancelAnimationFrame(frame);
+      if (lenis) lenis.destroy();
+      document.removeEventListener('click', handleAnchorClick);
+      observer.disconnect();
+      targets.forEach((el) => el.classList.remove('reveal', 'is-visible'));
+    };
   }, []);
 
   return (
-    <div ref={domRef} className={`reveal ${className}`}>
-      {children}
-    </div>
-  );
-};
-
-// Komponen Flip Card Anggota Tim
-const TeamMemberCard = ({ name, role, bio, initial }) => {
-  const [isFlipped, setIsFlipped] = useState(false);
-
-  return (
-    <div 
-      className={`flip-card h-72 ${isFlipped ? 'is-flipped' : ''}`}
-      onClick={() => setIsFlipped(!isFlipped)}
-    >
-      <div className="flip-card-inner">
-        {/* DEPAN */}
-        <div className="flip-card-front shadow-md">
-          <div className="w-24 h-24 mx-auto rounded-full bg-[#E8F5E9] flex items-center justify-center mb-4">
-            <span className="text-[#4CAF50] text-3xl font-bold">{initial}</span>
+    <div className="site-shell">
+      <header className="site-header">
+        <nav className="navbar container" aria-label="Main navigation">
+          <a className="brand" href="#home" onClick={closeMenu}>Angelina<span>.</span></a>
+          <button
+            className="mobile-menu-button"
+            type="button"
+            aria-label="Toggle navigation"
+            aria-expanded={menuOpen}
+            onClick={() => setMenuOpen(!menuOpen)}
+          >
+            <span></span><span></span>
+          </button>
+          <div className={`nav-links ${menuOpen ? 'nav-links-open' : ''}`}>
+            <a href="#home" onClick={closeMenu}>Home</a>
+            <a href="#about" onClick={closeMenu}>About</a>
+            <a href="#works" onClick={closeMenu}>Projects</a>
+            <a href="#credentials" onClick={closeMenu}>Credentials</a>
           </div>
-          <h3 className="text-xl font-semibold text-[#333333]">{name}</h3>
-          <p className="text-[#4CAF50] font-medium text-sm mt-1">{role}</p>
-          <p className="text-xs text-gray-400 mt-4">*Click to see details</p>
-        </div>
+          <a className="button button-dark nav-cta" href="#contact">Let&apos;s Talk <ArrowUpRight /></a>
+        </nav>
+      </header>
 
-        {/* BELAKANG */}
-        <div className="flip-card-back">
-          <h3 className="text-xl font-bold text-[#2F3E46] mb-2">{name}</h3>
-          <p className="text-sm text-[#4B5563] leading-relaxed">{bio}</p>
-          <div className="mt-4 flex gap-3">
-            <a href="#" className="text-xs bg-white px-3 py-1 rounded-full text-[#4CAF50] font-semibold hover:bg-[#4CAF50] hover:text-white transition">LinkedIn</a>
-            <a href="#" className="text-xs bg-white px-3 py-1 rounded-full text-[#4CAF50] font-semibold hover:bg-[#4CAF50] hover:text-white transition">Email</a>
-          </div>
-          <p className="text-xs text-gray-500 mt-4">*Click to go back</p>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-function App() {
-  const [activeTab, setActiveTab] = useState(1);
-
-  return (
-    <div className="min-h-screen bg-[#FDFBF7] text-gray-600 font-sans">
-      
-      {/* HEADER / NAVBAR (FLOATING TRANSPARAN) */}
-      <nav className="w-full bg-white/20 backdrop-blur-lg border-b border-gray-200 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between border-b border-gray-100/50">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 bg-[#E8F5E9] rounded-xl flex items-center justify-center">
-              <span className="text-[#4CAF50] font-semibold text-lg">E</span>
-            </div>
-            <h1 className="text-lg font-medium tracking-wide text-[#333333]">Epsilon</h1>
-          </div>
-
-          <div className="hidden md:flex gap-8 text-sm font-medium text-gray-500">
-            <a href="#team" className="hover:text-[#4CAF50] transition">Our Team</a>
-            <a href="#work" className="hover:text-[#4CAF50] transition">Our Works</a>
-            <a href="#contact" className="hover:text-[#4CAF50] transition">Contact</a>
-          </div>
-
-          <a href="#contact" className="bg-[#E8F5E9] text-[#4CAF50] border border-[#4CAF50]/20 px-5 py-2.5 rounded-full text-sm font-medium hover:bg-[#4CAF50] hover:text-white transition shadow-sm">
-            Let's Talk
-          </a>
-        </div>
-      </nav>
-
-      {/* HALAMAN UTAMA */}
-      <div>
-        {/* HERO SECTION */}
-        <Reveal>
-          <section className="max-w-7xl mx-auto px-6 py-20 md:py-28 flex flex-col md:flex-row items-center justify-between gap-12">
-            
-            <div className="w-full md:w-3/5 text-left">
-              <span className="inline-block bg-[#E8F5E9] text-[#4CAF50] px-4 py-1.5 rounded-full text-xs font-medium uppercase tracking-wider mb-6">
-                Creative Digital Team
-              </span>
-              
-              <h1 className="text-4xl md:text-6xl font-serif font-light leading-tight text-[#333333] mb-6">
-                We Build Digital <br /> 
-                <span className="text-[#4CAF50] font-normal">Perfect</span> Experiences.
-              </h1>
-              
-              <p className="text-lg md:text-xl text-gray-500 max-w-xl mx-auto md:mx-0 mb-10 leading-relaxed">
-                Epsilon is a creative team transforming ideas into modern, fast, and aesthetically pleasing digital experiences.
+      <main>
+        <section id="home" className="hero section-pad">
+          <div className="container hero-grid">
+            <div className="hero-copy">
+              <p className="eyebrow"><span className="status-dot"></span> PERSONAL PORTFOLIO</p>
+              <h1>Hii!<br />I'm <span className="text-accent">Angelina</span></h1>
+              <p className="hero-description">
+                 <strong>Angelina</strong> — an informatics student exploring web development,
+                backend systems, and the ideas that turn into useful digital products.
               </p>
-              
-              <div className="flex flex-col md:flex-row gap-4">
-                <a href="#team" className="bg-[#4CAF50] text-white px-8 py-3.5 rounded-full font-medium hover:bg-[#43A047] transition shadow-sm">
-                  Meet Our Team
-                </a>
-                <a href="#work" className="bg-transparent border border-[#4CAF50] text-[#4CAF50] px-8 py-3.5 rounded-full font-medium hover:bg-[#4CAF50] hover:text-white transition">
-                  See Our Works
-                </a>
+              <div className="hero-actions">
+                <a className="button button-dark" href="#works">Explore my work <ArrowUpRight /></a>
+                <a className="button button-outline" href="#about">More about me <ArrowUpRight /></a>
+              </div>
+              <div className="hero-meta">
+                <div><strong>Web</strong><span>Development</span></div>
+                <div><strong>Backend</strong><span>In progress</span></div>
+                <div><strong>Always</strong><span>Learning</span></div>
               </div>
             </div>
-
-            <div className="hidden md:block w-2/5">
-              <div className="w-full h-96 bg-gradient-to-br from-[#E8F5E9] to-[#FDFBF7] rounded-3xl shadow-lg transform rotate-3 hover:rotate-0 transition duration-500"></div>
-            </div>
-
-          </section>
-        </Reveal>
-
-        {/* SECTION OUR TEAM */}
-        <section id="team" className="py-24 bg-[#FDFBF7]">
-          <div className="max-w-7xl mx-auto px-6">
-            <Reveal>
-              <div className="text-center mb-16">
-                <h2 className="text-3xl md:text-4xl font-serif font-light text-[#333333] mb-4">Meet Our Team</h2>
-                <p className="text-gray-500 max-w-xl mx-auto font-light">Click on a member card to see their details and expertise.</p>
-              </div>
-            </Reveal>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-              <Reveal>
-                <TeamMemberCard 
-                  name="Angelina Christiani S" 
-                  role="Project Manager" 
-                  initial="A"
-                  bio="Responsible for managing team workflow, ensuring all projects are completed on time and according to targets."
-                />
-              </Reveal>
-
-              <Reveal>
-                <TeamMemberCard 
-                  name="Dhimas Eko A" 
-                  role="Backend Developer" 
-                  initial="B"
-                  bio="Builds server logic, databases, and APIs to ensure the website runs stable, secure, and smoothly."
-                />
-              </Reveal>
-
-              <Reveal>
-                <TeamMemberCard 
-                  name="Aluna Syela Eka F" 
-                  role="UI/UX Designer" 
-                  initial="C"
-                  bio="Designs aesthetic and user-friendly interfaces (User Friendly) for all platforms."
-                />
-              </Reveal>
-
-              <Reveal>
-                <TeamMemberCard 
-                  name="Daffa Rikza M" 
-                  role="Frontend Developer" 
-                  initial="D"
-                  bio="Transforms designs into responsive, fast, and interactive React code across various devices."
-                />
-              </Reveal>
-            </div>
+            <HeroVisual />
+          </div>
+          <div className="container hero-bottom-line">
+            <span>BASED IN INDONESIA</span><span>SCROLL TO EXPLORE ↓</span>
           </div>
         </section>
 
-        {/* SECTION OUR WORKS */}
-        <section id="work" className="py-24 bg-[#FDFBF7]">
-          <div className="max-w-7xl mx-auto px-6">
-            <Reveal>
-              <div className="text-center mb-10">
-                <h2 className="text-3xl md:text-4xl font-serif font-light text-[#333333] mb-4">Our Works</h2>
-                <p className="text-gray-500 max-w-xl mx-auto font-light">Explore our projects from two perspectives: Education and Industry.</p>
+        <section id="about" className="about-section section-pad">
+          <div className="container">
+            <SectionHeading
+              eyebrow="ABOUT ME"
+              title={<>Learn. Build. <span className="text-accent">Share.</span></>}
+            />
+            <div className="about-grid">
+              <div className="about-story">
+                <p className="large-copy">
+                  I&apos;m an Informatics Engineering Education student who loves building for the web, from the interface people see to the data behind it.
+                </p>
+                <p>
+                  I&apos;m currently doing an internship as a web developer at Branding Universitas Negeri Malang, where I turn real needs into working pages. Outside of class, I&apos;m part of Komunitas Teknik Care and active in mentorship, including serving as a practicum assistant, because explaining something to others is one of the best ways to understand it myself.
+                </p>
+                <a className="text-link" href="#contact">Let&apos;s connect <ArrowUpRight /></a>
               </div>
-            </Reveal>
-
-            {/* Tombol Tab */}
-            <div className="flex justify-center gap-4 mb-12">
-              <button 
-                onClick={() => setActiveTab(1)}
-                className={`px-8 py-3 rounded-full font-medium transition duration-300 ${
-                  activeTab === 1 
-                    ? 'bg-[#E8F5E9] text-[#4CAF50] shadow-sm' 
-                    : 'bg-white text-[#4CAF50] border border-[#4CAF50]'
-                }`}
-              >
-                Education
-              </button>
-              <button 
-                onClick={() => setActiveTab(2)}
-                className={`px-8 py-3 rounded-full font-medium transition duration-300 ${
-                  activeTab === 2 
-                    ? 'bg-[#E8F5E9] text-[#4CAF50] shadow-sm' 
-                    : 'bg-white text-[#4CAF50] border border-[#4CAF50]'
-                }`}
-              >
-                Industry
-              </button>
+              <div className="about-details">
+                <div className="detail-block">
+                  <span className="detail-number">01</span>
+                  <div><h3>Education</h3><p>Universitas Negeri Malang</p><span className="muted-text">Informatics Engineering Education</span></div>
+                </div>
+                <div className="detail-block">
+                  <span className="detail-number">02</span>
+                  <div><h3>Internship</h3><p>Web Developer</p><span className="muted-text">Branding Universitas Negeri Malang</span></div>
+                </div>
+                <div className="detail-block">
+                  <span className="detail-number">03</span>
+                  <div><h3>Organization</h3><p>Komunitas Teknik Care</p><span className="muted-text">BEM FT Universitas Negeri Malang</span></div>
+                </div>
+              </div>
             </div>
+            <Toolkit />
+          </div>
+        </section>
 
-            {/* KONTEN TAB PENDIDIKAN */}
-            {activeTab === 1 && (
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <Reveal>
-                  <div className="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-lg hover:-translate-y-1 transition duration-300">
-                    <div className="h-52 bg-[#E8F5E9] relative">
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <span className="text-[#4CAF50] text-lg font-medium opacity-70">Project Image Placeholder</span>
-                      </div>
-                    </div>
-                    <div className="p-6">
-                      <h3 className="text-xl font-medium text-[#333333] mb-2">Education Project 1</h3>
-                      <p className="text-gray-500 text-sm font-light">Short description of this project.</p>
-                      <span className="inline-block mt-4 text-xs font-medium text-[#4CAF50] bg-[#E8F5E9] px-3 py-1 rounded-full">Academic</span>
-                    </div>
+        <section id="works" className="works-section section-pad">
+          <div className="container">
+            <div className="section-topline">
+              <SectionHeading eyebrow="SELECTED PROJECT" title={<>Ideas made <span className="text-accent">tangible.</span></>} description="A selection of projects, experiments, and concepts I have worked on or explored." />
+              <span className="section-count">{pad(projects.length)} / PROJECTS</span>
+            </div>
+            <div className="projects-grid">
+              {shownProjects.map((project, index) => (
+                <article
+                  className={`project-card${index >= INITIAL_PROJECTS ? ' card-enter' : ''}`}
+                  key={project.number}
+                >
+                  <div className={`project-art ${project.tone} ${project.image ? 'project-art-has-image' : ''}`}>
+                    {project.image ? <img className="project-image" src={project.image} alt={`${project.title} preview`} /> : <><span className="project-number">{project.number}</span><span className="project-art-title">{project.title}</span><span className="project-art-caption">{project.category}</span><span className="project-art-mark">↗</span></>}
                   </div>
-                </Reveal>
-
-                <Reveal>
-                  <div className="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-lg hover:-translate-y-1 transition duration-300">
-                    <div className="h-52 bg-[#E8F5E9] relative">
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <span className="text-[#4CAF50] text-lg font-medium opacity-70">Project Image Placeholder</span>
-                      </div>
-                    </div>
-                    <div className="p-6">
-                      <h3 className="text-xl font-medium text-[#333333] mb-2">Education Project 2</h3>
-                      <p className="text-gray-500 text-sm font-light">Short description of this project.</p>
-                      <span className="inline-block mt-4 text-xs font-medium text-[#4CAF50] bg-[#E8F5E9] px-3 py-1 rounded-full">Academic</span>
-                    </div>
+                  <div className="project-content">
+                    <div className="project-title-row"><h3>{project.title}</h3><span className="project-category">{project.category}</span></div>
+                    <p>{project.description}</p>
+                    <div className="tag-list">{project.stack.map((tech) => <span key={tech}>{tech}</span>)}</div>
+                    {(project.liveUrl || project.repoUrl) && <div className="project-links">{project.liveUrl && <a href={project.liveUrl} target="_blank" rel="noreferrer">Live demo ↗</a>}{project.repoUrl && <a href={project.repoUrl} target="_blank" rel="noreferrer">Source code ↗</a>}</div>}
                   </div>
-                </Reveal>
-
-                <Reveal>
-                  <div className="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-lg hover:-translate-y-1 transition duration-300">
-                    <div className="h-52 bg-[#E8F5E9] relative">
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <span className="text-[#4CAF50] text-lg font-medium opacity-70">Project Image Placeholder</span>
-                      </div>
-                    </div>
-                    <div className="p-6">
-                      <h3 className="text-xl font-medium text-[#333333] mb-2">Education Project 3</h3>
-                      <p className="text-gray-500 text-sm font-light">Short description of this project.</p>
-                      <span className="inline-block mt-4 text-xs font-medium text-[#4CAF50] bg-[#E8F5E9] px-3 py-1 rounded-full">Academic</span>
-                    </div>
-                  </div>
-                </Reveal>
+                </article>
+              ))}
+            </div>
+            {projects.length > INITIAL_PROJECTS && (
+              <div className="show-more-wrap">
+                {showAllProjects ? (
+                  <button className="button button-outline" type="button" onClick={() => collapseSection('works', setShowAllProjects)}>
+                    Show less ↑
+                  </button>
+                ) : (
+                  <button className="button button-outline" type="button" onClick={() => setShowAllProjects(true)}>
+                    Show more ({projects.length - INITIAL_PROJECTS} more) ↓
+                  </button>
+                )}
               </div>
             )}
+          </div>
+        </section>
 
-            {/* KONTEN TAB INDUSTRI */}
-            {activeTab === 2 && (
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <Reveal>
-                  <div className="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-lg hover:-translate-y-1 transition duration-300">
-                    <div className="h-52 bg-[#E8F5E9] relative">
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <span className="text-[#4CAF50] text-lg font-medium opacity-70">Project Image Placeholder</span>
-                      </div>
-                    </div>
-                    <div className="p-6">
-                      <h3 className="text-xl font-medium text-[#333333] mb-2">Industry Project 1</h3>
-                      <p className="text-gray-500 text-sm font-light">Short description of this project.</p>
-                      <span className="inline-block mt-4 text-xs font-medium text-[#4CAF50] bg-[#E8F5E9] px-3 py-1 rounded-full">Industry</span>
-                    </div>
+        <section id="credentials" className="credentials-section section-pad">
+          <div className="container">
+            <div className="section-topline credentials-topline">
+              <SectionHeading eyebrow="MILESTONES & LEARNING" title={<>Proof of <span className="text-accent">progress.</span></>} description="Certificates, courses, awards, and achievements gathered along the way." />
+              <span className="section-count">{pad(credentials.length)} / CREDENTIALS</span>
+            </div>
+            <div className="credential-filters" role="group" aria-label="Filter credentials">
+              {categories.map((category) => (
+                <button
+                  key={category}
+                  className={`filter-button ${activeCategory === category ? 'filter-active' : ''}`}
+                  type="button"
+                  onClick={() => { setActiveCategory(category); setShowAllCredentials(false); }}
+                >{category}</button>
+              ))}
+            </div>
+            <div className="credentials-grid">
+              {shownCredentials.map((credential, index) => (
+                <button
+                  className={`credential-card${index >= INITIAL_CREDENTIALS ? ' card-enter' : ''}`}
+                  key={credential.title}
+                  onClick={() => setSelectedCredential(credential)}
+                  type="button"
+                >
+                  <div className={`certificate-preview certificate-tone-${index % 3} ${credential.image ? 'certificate-has-image' : ''}`}>
+                    {credential.image ? <img className="certificate-image" src={credential.image} alt={credential.title} /> : <div className="certificate-inner">
+                      <span className="certificate-topline">CERTIFICATE OF {credential.type === 'Courses' ? 'COMPLETION' : credential.type === 'Awards' ? 'RECOGNITION' : 'ACHIEVEMENT'}</span>
+                      <span className="certificate-seal">e.</span>
+                      <span className="certificate-title">{credential.title}</span>
+                      <span className="certificate-rule"></span>
+                      <span className="certificate-recipient">Angelina</span>
+                      <span className="certificate-issuer">{credential.issuer}</span>
+                    </div>}
+                    <span className="credential-open">View ↗</span>
                   </div>
-                </Reveal>
-
-                <Reveal>
-                  <div className="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-lg hover:-translate-y-1 transition duration-300">
-                    <div className="h-52 bg-[#E8F5E9] relative">
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <span className="text-[#4CAF50] text-lg font-medium opacity-70">Project Image Placeholder</span>
-                      </div>
-                    </div>
-                    <div className="p-6">
-                      <h3 className="text-xl font-medium text-[#333333] mb-2">Industry Project 2</h3>
-                      <p className="text-gray-500 text-sm font-light">Short description of this project.</p>
-                      <span className="inline-block mt-4 text-xs font-medium text-[#4CAF50] bg-[#E8F5E9] px-3 py-1 rounded-full">Industry</span>
-                    </div>
+                  <div className="credential-info">
+                    <span className="credential-type">{credential.type}</span>
+                    <h3>{credential.title}</h3>
+                    <p>{credential.issuer}</p>
+                    <span className="credential-date">{credential.date}</span>
                   </div>
-                </Reveal>
-
-                <Reveal>
-                  <div className="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-lg hover:-translate-y-1 transition duration-300">
-                    <div className="h-52 bg-[#E8F5E9] relative">
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <span className="text-[#4CAF50] text-lg font-medium opacity-70">Project Image Placeholder</span>
-                      </div>
-                    </div>
-                    <div className="p-6">
-                      <h3 className="text-xl font-medium text-[#333333] mb-2">Industry Project 3</h3>
-                      <p className="text-gray-500 text-sm font-light">Short description of this project.</p>
-                      <span className="inline-block mt-4 text-xs font-medium text-[#4CAF50] bg-[#E8F5E9] px-3 py-1 rounded-full">Industry</span>
-                    </div>
-                  </div>
-                </Reveal>
+                </button>
+              ))}
+            </div>
+            {visibleCredentials.length > INITIAL_CREDENTIALS && (
+              <div className="show-more-wrap">
+                {showAllCredentials ? (
+                  <button className="button button-outline" type="button" onClick={() => collapseSection('credentials', setShowAllCredentials)}>
+                    Show less ↑
+                  </button>
+                ) : (
+                  <button className="button button-outline" type="button" onClick={() => setShowAllCredentials(true)}>
+                    Show more ({visibleCredentials.length - INITIAL_CREDENTIALS} more) ↓
+                  </button>
+                )}
               </div>
             )}
-
           </div>
         </section>
 
-        {/* SECTION CONTACT */}
-        <section id="contact" className="py-24 bg-[#FDFBF7]">
-          <Reveal>
-            <div className="max-w-4xl mx-auto px-6 text-center">
-              <h2 className="text-3xl md:text-4xl font-serif font-light text-[#333333] mb-4">Let's Work Together</h2>
-              <p className="text-gray-500 text-lg font-light mb-8">Have an interesting project? Feel free to contact us.</p>
-              
-              <div className="flex flex-col md:flex-row justify-center gap-4">
-                <a href="mailto:halo@Epsilon.com" className="bg-[#E8F5E9] text-[#4CAF50] border border-[#4CAF50]/20 px-8 py-3.5 rounded-full font-medium hover:bg-[#4CAF50] hover:text-white transition shadow-sm">
-                  halo@Epsilon.com
-                </a>
-                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="bg-[#E8F5E9] text-[#4CAF50] border border-[#4CAF50]/20 px-8 py-3.5 rounded-full font-medium hover:bg-[#4CAF50] hover:text-white transition shadow-sm">
-                  DM Instagram
-                </a>
+        <section id="contact" className="contact-section section-pad">
+          <div className="container contact-panel">
+            <div className="contact-copy">
+              <p className="eyebrow">HAVE SOMETHING IN MIND?</p>
+              <h2>Let&apos;s make<br /><span className="text-accent">it happen.</span></h2>
+              <p>Have an idea, collaboration, or opportunity to discuss? My inbox is open.</p>
+            </div>
+            <div className="contact-actions">
+              <a className="button button-light" href="https://wa.me/6282249038679">Send me <ArrowUpRight /></a>
+              <p>Send me this email with your active address.</p>
+              <div className="social-links">
+                <a href="https://github.com/anglynxc" target="_blank" rel="noreferrer">GitHub <ArrowUpRight /></a>
+                <a href="https://www.linkedin.com/in/angelina-christiani-sihotang-60a5ab3b2" target="_blank" rel="noreferrer">LinkedIn <ArrowUpRight /></a>
               </div>
             </div>
-          </Reveal>
+          </div>
         </section>
-      </div>
+      </main>
 
-      {/* FOOTER */}
-      <footer className="bg-[#F1F8E9] text-[#2F3E46] py-12 border-t border-gray-100">
-        <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-[#E8F5E9] rounded-lg flex items-center justify-center">
-              <span className="text-[#4CAF50] font-medium text-lg">E</span>
-            </div>
-            <h1 className="text-lg font-medium">Epsilon</h1>
-          </div>
-          
-          <p className="text-sm text-gray-600">© 2026 Epsilon. All rights reserved.</p>
-          
-          <div className="flex gap-4">
-            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-[#E8F5E9] flex items-center justify-center hover:bg-[#4CAF50] transition group">
-              <svg className="w-5 h-5 text-[#4CAF50] group-hover:text-white" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-              </svg>
-            </a>
-            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-[#E8F5E9] flex items-center justify-center hover:bg-[#4CAF50] transition group">
-              <svg className="w-5 h-5 text-[#4CAF50] group-hover:text-white" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M4.98 3.5c0 1.381-1.11 2.5-2.48 2.5s-2.48-1.119-2.48-2.5c0-1.38 1.11-2.5 2.48-2.5s2.48 1.12 2.48 2.5zm.02 4.5h-5v16h5v-16zm7.982 0h-4.968v16h4.969v-8.399c0-4.67 6.029-5.052 6.029 0v8.399h4.988v-10.131c0-7.88-8.922-7.593-11.018-3.714v-2.155z"/>
-              </svg>
-            </a>
-            <a href="https://dribbble.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-[#E8F5E9] flex items-center justify-center hover:bg-[#4CAF50] transition group">
-              <svg className="w-5 h-5 text-[#4CAF50] group-hover:text-white" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 24c-6.627 0-12-5.373-12-12s5.373-12 12-12 12 5.373 12 12-5.373 12-12 12zm10.12-10.358c-.35-.11-3.17-.953-6.384-.438 1.34 3.684 1.887 6.684 1.992 7.308 2.3-1.555 3.936-4.02 4.395-6.87zm-6.115 7.808c-.153-.9-.75-4.032-2.19-7.77l-.066.02c-5.79 2.015-7.86 6.025-8.04 6.4 1.73 1.358 3.92 2.166 6.29 2.166 1.42 0 2.77-.29 4-.816zm-11.62-2.58c.232-.4 3.045-5.055 8.332-6.765.135-.045.27-.084.405-.12-.26-.585-.54-1.167-.832-1.74C7.17 11.775 2.206 11.71 1.756 11.7l-.004.312c0 2.633.998 5.037 2.634 6.855zm-2.42-8.955c.46.008 4.683.026 9.477-1.248-1.698-3.018-3.53-5.558-3.8-5.928-2.868 1.35-5.01 3.99-5.676 7.17zM9.6 2.052c.282.38 2.145 2.914 3.822 6 3.645-1.365 5.19-3.44 5.373-3.702-1.81-1.61-4.19-2.586-6.795-2.586-.825 0-1.63.1-2.4.285zm10.335 3.483c-.218.29-1.935 2.493-5.724 4.04.24.49.47.985.68 1.486.08.18.15.36.22.53 3.41-.43 6.8.26 7.14.33-.02-2.42-.88-4.64-2.31-6.38z"/>
-              </svg>
-            </a>
-          </div>
+      <footer className="site-footer">
+        <div className="container footer-inner">
+          <a className="brand" href="#home">Angelina<span>.</span></a>
+          <p>Designed with intention · © {new Date().getFullYear()} Angelina</p>
+          <a href="#home" className="back-top">Back to top ↑</a>
         </div>
       </footer>
+
+      {selectedCredential && (
+        <div className="modal-backdrop" role="presentation" onClick={() => setSelectedCredential(null)}>
+          <div className="credential-modal" data-lenis-prevent role="dialog" aria-modal="true" aria-labelledby="modal-title" onClick={(event) => event.stopPropagation()}>
+            <button className="modal-close" type="button" aria-label="Close preview" onClick={() => setSelectedCredential(null)}>×</button>
+            <div className="modal-certificate">
+              {selectedCredential.image ? <img className="modal-certificate-image" src={selectedCredential.image} alt={selectedCredential.title} /> : <><span className="certificate-seal">e.</span><p className="eyebrow">{selectedCredential.type}</p><h2 id="modal-title">{selectedCredential.title}</h2><p>{selectedCredential.issuer}</p><span className="certificate-rule"></span><span className="muted-text">{selectedCredential.date}</span></>}
+            </div>
+            <div className="modal-description"><h3>{selectedCredential.title}</h3><p>{selectedCredential.detail}</p><p className="content-note">{selectedCredential.issuer} · {selectedCredential.date}</p></div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
